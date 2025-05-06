@@ -1,0 +1,128 @@
+[
+  {
+    "datum": "2025-05-21",
+    "start": "12:25",
+    "end": "13:10",
+    "lesson": "Fr",
+    "lehrer": "Dg"
+  },
+  {
+    "datum": "2025-05-23",
+    "start": "11:35",
+    "end": "12:20",
+    "lesson": "Fr",
+    "lehrer": "Dg"
+  },
+  {
+    "datum": "2025-05-23",
+    "start": "12:25",
+    "end": "13:10",
+    "lesson": "Fr",
+    "lehrer": "Dg"
+  },
+  {
+    "datum": "2025-06-04",
+    "start": "12:25",
+    "end": "13:10",
+    "lesson": "Sn",
+    "lehrer": "Scho"
+  },
+  {
+    "datum": "2025-05-26",
+    "start": "14:00",
+    "end": "14:45",
+    "lesson": "Sn",
+    "lehrer": "Met"
+  },
+  {
+    "datum": "2025-05-26",
+    "start": "14:50",
+    "end": "15:35",
+    "lesson": "Sn",
+    "lehrer": "Met"
+  },
+  {
+    "datum": "2025-05-06",
+    "start": "09:45",
+    "end": "10:30",
+    "lesson": "Ku",
+    "lehrer": "Nag"
+  },
+  {
+    "datum": "2025-05-06",
+    "start": "10:35",
+    "end": "11:20",
+    "lesson": "Ku",
+    "lehrer": "Nag"
+  },
+  {
+    "datum": "2025-05-06",
+    "start": "07:55",
+    "end": "08:40",
+    "lesson": "Ge",
+    "lehrer": "Hun"
+  },
+  {
+    "datum": "2025-05-06",
+    "start": "08:45",
+    "end": "09:30",
+    "lesson": "Ge",
+    "lehrer": "Hun"
+  },
+  {
+    "datum": "2025-05-26",
+    "start": "07:55",
+    "end": "08:40",
+    "lesson": "Po",
+    "lehrer": "Ak"
+  },
+  {
+    "datum": "2025-05-26",
+    "start": "08:45",
+    "end": "09:30",
+    "lesson": "Po",
+    "lehrer": "Ak"
+  },
+  {
+    "datum": "2025-06-05",
+    "start": "09:45",
+    "end": "10:30",
+    "lesson": "WN",
+    "lehrer": "My"
+  },
+  {
+    "datum": "2025-06-05",
+    "start": "10:35",
+    "end": "11:20",
+    "lesson": "WN",
+    "lehrer": "My"
+  },
+  {
+    "datum": "2025-05-26",
+    "start": "11:35",
+    "end": "12:20",
+    "lesson": "Ch",
+    "lehrer": "Gd"
+  },
+  {
+    "datum": "2025-05-26",
+    "start": "12:25",
+    "end": "13:10",
+    "lesson": "Ch",
+    "lehrer": "Gd"
+  },
+  {
+    "datum": "2025-05-26",
+    "start": "09:45",
+    "end": "10:30",
+    "lesson": "Bi",
+    "lehrer": "Gj"
+  },
+  {
+    "datum": "2025-05-26",
+    "start": "10:35",
+    "end": "11:20",
+    "lesson": "Bi",
+    "lehrer": "Gj"
+  }
+]
