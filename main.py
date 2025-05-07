@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from time import sleep
 
 import discord
@@ -9,6 +9,8 @@ import os
 import json
 
 
+load_dotenv()
+CLASS = os.getenv("CLASS")
 
 intents = discord.Intents.all()
 
@@ -31,19 +33,29 @@ async def on_ready():
 
 channel = bot.get_channel(1369371980238819359)
 
+try:
+    session = webuntis.Session(
+        username=os.getenv("USER"),
+        password=os.getenv("PASSWORD"),
+        server=os.getenv("SERVER"),
+        school=os.getenv("SCHOOL"),
+        useragent='Untis Canceled Lessons Bot'
+    )
+    s = session.login()
+    klasse = s.klassen().filter(name=CLASS)[0]
+    testTimetable = s.timetable(klasse=klasse, start=date.today(), end=date.today())
+except Exception as e:
+   print(f"Fehler: {e}")
+   exit()
+
+
 @bot.command(description="Starte den Bot")
 @commands.has_permissions(administrator=True)
 async def start(ctx):
     await ctx.respond("Done!", ephemeral=True)
     while True:
-        sleep(10)
-
         # API
-
-        CLASS = '11a'  # <-- Deine Klasse hier anpassen
         FILEPATH = 'canceledLessons.json'
-
-        # === Zeitraum definieren ===
         startDate = date.today()
         endDate = startDate + timedelta(days=30)
 
@@ -58,19 +70,6 @@ async def start(ctx):
         else:
             knownCanceledLessons = []
 
-        # === WebUntis-Session ===
-        session = webuntis.Session(
-            username='',
-            password='',
-            server='',
-            school='',
-            useragent='Untis Canceled Lessons Bot'
-        )
-        s = session.login()
-
-        # === Klasse holen ===
-        klasse = s.klassen().filter(name=CLASS)[0]
-
         # === Stundenplan abrufen ===
         timetable = s.timetable(klasse=klasse, start=startDate, end=endDate)
         ausfaelle = [l for l in timetable if l.code == 'cancelled']
@@ -84,7 +83,7 @@ async def start(ctx):
                 "start": lesson.start.strftime('%H:%M'),
                 "end": lesson.end.strftime('%H:%M'),
                 "lesson": lesson.subjects[0].name if lesson.subjects else "kein Fach",
-                "lehrer": lesson.teachers[0].name if lesson.teachers else "kein Lehrer"
+                "teacher": lesson.teachers[0].name if lesson.teachers else "kein Lehrer"
             }
 
             if data not in knownCanceledLessons:
@@ -101,10 +100,23 @@ async def start(ctx):
         else:
             for data in newCanceledLessons:
                 print("Neuer Ausfall: ")
-                print(f"{data['datum']} | {data['start']}–{data['end']} | {data['lesson']} mit {data['lehrer']}")
-                await bot.get_channel(1369371980238819359).send(
-                    f"Neuer Ausfall\n {data['datum']} | {data['start']}–{data['end']} | {data['lesson']} mit {data['lehrer']}")
+                print(f"{data['datum']} | {data['start']}–{data['end']} | {data['lesson']} mit {data['teacher']}")
 
+                embed = discord.Embed(title=f":x: {data['lesson']}",
+                                      description=f"**{data['lesson']}** mit {data['teacher']} entfällt!\n> {data['datum']} - {data['start']}–{data['end']}",
+                                      colour=0xff0000,
+                                      timestamp=datetime.now())
+
+                embed.set_author(name="Untis-Aktualisierung")
+
+                embed.set_footer(text="Untis-Bot")
+
+                # await bot.get_channel(1369371980238819359).send(embed = embed)
+        sleep(10)
 
 load_dotenv()
-bot.run(os.getenv("TOKEN"))
+try:
+    bot.run(os.getenv("TOKEN"))
+except Exception as e:
+    print(f"Fehler: {e}")
+    exit()
