@@ -1,4 +1,4 @@
-# UnitsBot
+# UntisBot
 This Discord Bot notifies you when a new outage is entered in Untis
 ## Setup
 ### 1. Create a bot on the [Discord Developer Page](https://discord.dev) and generate a Token
@@ -14,8 +14,8 @@ Internal Name: Test School
 ### 4. Enter your Informations in the .env File:
    Following Informations are important:
    - Bot Token
-   - your Untis username
-   - your Untis password
+   - Your Untis username
+   - Your Untis password
    - Untis School Server
    - Untis School Internal Name
    - Exact Name of your Class
@@ -25,7 +25,7 @@ _Note: All Bot messages are in german but can be altered in the source code_
 
 
 ## Common Errors:
-1. bad credentials- > Wrong Username or Password
+1. bad credentials -> Wrong Username or Password
 2. list index out of range -> Class not found
 3. no right for timetable -> Your user doesn't have access to the class 
 4. Request ID was not the same one as returned. -> Internal School Name is wrong
