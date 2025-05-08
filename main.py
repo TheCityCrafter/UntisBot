@@ -8,10 +8,11 @@ from discord.ext import commands, tasks
 from dotenv import load_dotenv
 import os
 import json
+from past.builtins import xrange
 
 
 load_dotenv()
-CLASS = os.getenv("CLASS")
+CLASS = os.getenv("UNTIS_CLASS")
 
 intents = discord.Intents.all()
 
@@ -35,14 +36,14 @@ async def on_ready():
 
 channel = bot.get_channel(1369371980238819359)
 
-# === Daten überprüfung ===
+#Daten überprüfung
 
 try:
     session = webuntis.Session(
-        username=os.getenv("USER"),
-        password=os.getenv("PASSWORD"),
-        server=os.getenv("SERVER"),
-        school=os.getenv("SCHOOL"),
+        username=os.getenv("UNTIS_USER"),
+        password=os.getenv("UNTIS_PASSWORD"),
+        server=os.getenv("UNTIS_SERVER"),
+        school=os.getenv("UNTIS_SCHOOL"),
         useragent='Untis Canceled Lessons Bot'
     )
     s = session.login()
@@ -56,14 +57,14 @@ except Exception as e:
 
 @tasks.loop(seconds=10)
 async def send_request():
-    # === API ===
+    #API
     session.logout()
     session.login()
     FILEPATH = 'canceledLessons.json'
     startDate = date.today()
     endDate = startDate + timedelta(days=30)
 
-    # === Vorherige Einträge laden (mit Fehlerprüfung) ===
+    #Vorherige Einträge laden
     if os.path.exists(FILEPATH) and os.path.getsize(FILEPATH) > 0:
         with open(FILEPATH, 'r', encoding='utf-8') as f:
             try:
@@ -74,11 +75,11 @@ async def send_request():
     else:
         knownCanceledLessons = []
 
-    # === Stundenplan abrufen ===
+    #Stundenplan abrufen
     timetable = s.timetable(klasse=klasse, start=startDate, end=endDate)
     ausfaelle = [l for l in timetable if l.code == 'cancelled']
 
-    # === Heutige Ausfälle zählen ===
+    #Heutige Ausfälle zählen
 
     todayAusfaelle = [l for l in s.timetable(klasse=klasse, start=startDate, end=startDate) if l.code == 'cancelled']
     todayAusfaelleCount = 0
@@ -88,7 +89,7 @@ async def send_request():
     await bot.change_presence(
         activity=discord.Activity(type=discord.ActivityType.custom, state=f"Heutige Ausfälle: {todayAusfaelleCount}"))
 
-    # === Neue Ausfälle erkennen und speichern ===
+    #Neue Ausfälle erkennen und speichern
     newCanceledLessons = []
 
     for lesson in ausfaelle:
@@ -104,20 +105,41 @@ async def send_request():
             newCanceledLessons.append(data)
             knownCanceledLessons.append(data)
 
-    # === JSON-Datei aktualisieren ===
+    #JSON-Datei aktualisieren
     with open(FILEPATH, 'w', encoding='utf-8') as f:
         json.dump(knownCanceledLessons, f, indent=2, ensure_ascii=False)
 
-    # === Ausgabe neuer Ausfälle ===
+    #Ausgabe neuer Ausfälle
     if not newCanceledLessons:
         print(f"Keine neuen Ausfälle")
     else:
         for data in newCanceledLessons:
-            print("Neuer Ausfall: ")
-            print(f"{data['datum']} | {data['start']}–{data['end']} | {data['lesson']} mit {data['teacher']}")
 
-            embed = discord.Embed(title=f":x: {data['lesson']}",
-                                  description=f"**{data['lesson']}** mit {data['teacher']} entfällt!\n> {data['datum']} - {data['start']}–{data['end']}",
+            # Lehrer Kürzel mit Name ersetzten
+            with open("teachers.json") as f:
+                teachersData = json.load(f)
+                teacherName = data['teacher']
+                for i in xrange(0, len(teachersData)):
+                    if teachersData[i]["acronym"] == data['teacher']:
+                        teacherName = teachersData[i]["name"]
+
+            with open("lessons.json") as f:
+                lessonData = json.load(f)
+                lessonName = data['lesson']
+                for i in xrange(0, len(lessonData)):
+                    if lessonData[i]["acronym"] == data['lesson']:
+                        lessonName = lessonData[i]["name"]
+
+
+
+
+
+
+            print("Neuer Ausfall: ")
+            print(f"{data['datum']} | {data['start']}–{data['end']} | {lessonName} mit {teacherName}")
+
+            embed = discord.Embed(title=f":x: {lessonName}",
+                                  description=f"**{lessonName}** mit {teacherName} entfällt!\n> {data['datum']} - {data['start']}–{data['end']}",
                                   colour=0xff0000,
                                   timestamp=datetime.now())
 
@@ -153,7 +175,7 @@ async def stop(ctx):
 
 load_dotenv()
 try:
-    bot.run(os.getenv("TOKEN"))
+    bot.run(os.getenv("BOT_TOKEN"))
 except Exception as e:
     print(f"Fehler: {e}")
     exit()
