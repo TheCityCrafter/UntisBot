@@ -1,6 +1,5 @@
-import asyncio
+
 from datetime import date, timedelta, datetime
-from time import sleep
 
 import discord
 import webuntis
@@ -19,7 +18,7 @@ intents = discord.Intents.all()
 activity = discord.Activity(type=discord.ActivityType.custom, state="Nicht aktiviert")
 
 bot = discord.Bot(intents=intents,
-                  debug_guilds=[802651359743705139],
+                  debug_guilds=[os.getenv("DISCORD_SERVER_ID")],
                   status=discord.Status.online,
                   activity=activity)
 
@@ -34,7 +33,7 @@ class MyView(discord.ui.View):
 async def on_ready():
     print(f"{bot.user} ist online")
 
-channel = bot.get_channel(1369371980238819359)
+
 
 #Daten überprüfung
 
@@ -136,18 +135,20 @@ async def send_request():
 
 
             print("Neuer Ausfall: ")
-            print(f"{data['datum']} | {data['start']}–{data['end']} | {lessonName} mit {teacherName}")
+            print(f"{data['datum']} | {data['start']}–{data['end']} | {lessonName} mit {teacherName}, {data}")
 
-            embed = discord.Embed(title=f":x: {lessonName}",
-                                  description=f"**{lessonName}** mit {teacherName} entfällt!\n> {data['datum']} - {data['start']}–{data['end']}",
+            embed = discord.Embed(title=f"<:education:1370074483758465025> {lessonName}",
+                                  description=f"**Details zur Unterrichtsstunde:**\n<:teacher:1370074551475638412> {teacherName}\n<:calendar:1370046653230223361> {data['datum']}\n<:hourglass:1370074502146294011>{data['start']} - {data['end']} Uhr",
                                   colour=0xff0000,
                                   timestamp=datetime.now())
 
-            embed.set_author(name="Untis-Aktualisierung")
+            embed.set_author(name="Ausfall")
 
-            embed.set_footer(text="Untis-Bot")
+            embed.set_footer(text="UntisBot",
+                             icon_url="https://icones.pro/wp-content/uploads/2022/10/icone-robot-orange.png")
 
-            await bot.get_channel(1369371980238819359).send(embed=embed)
+            await bot.get_channel(int(os.getenv("DISCORD_CHANNEL_ID"))).send(embed=embed)
+            #await bot.get_channel(1369371980238819359).send("<@&1370078528615223339>")
 
 
 
